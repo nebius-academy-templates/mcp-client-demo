@@ -85,6 +85,11 @@ async def analyze_hotspots(
     top_n: int = 10,
     author_filter: list[str] | None = None,
 ) -> list[TextContent]:
+    """Find the most-changed files in a Git repo over a given time window.
+
+    Returns the top N files ranked by change frequency, optionally filtered
+    by author. Useful for identifying risky areas of the codebase.
+    """
     if not os.path.isdir(repo_path):
         raise McpError(ErrorData(code=INVALID_PARAMS, message=f"Path does not exist: {repo_path}"))
     if not os.path.isdir(os.path.join(repo_path, ".git")):
@@ -146,6 +151,11 @@ async def analyze_file_activity(
     limit: int = 20,
     offset: int = 0,
 ) -> list[TextContent]:
+    """Get per-file activity stats over a given time window.
+
+    Returns a paginated list of files with their change counts, contributor
+    counts, and recent activity. Use limit and offset to page through results.
+    """
     if not os.path.isdir(repo_path):
         raise McpError(ErrorData(code=INVALID_PARAMS, message=f"Path does not exist: {repo_path}"))
     if not os.path.isdir(os.path.join(repo_path, ".git")):
@@ -174,6 +184,10 @@ async def analyze_file_activity(
 @server.tool()
 @requires_role("analyst")
 async def get_team_structure(repo_path: str) -> list[TextContent]:
+    """Return the team structure associated with the repository.
+
+    Requires the 'analyst' role. Currently a stub — implementation pending.
+    """
     # TODO: implement team structure analysis
     return [TextContent(type="text", text="{}")]
 
@@ -181,6 +195,10 @@ async def get_team_structure(repo_path: str) -> list[TextContent]:
 @server.tool()
 @requires_role("ops")
 async def get_deployment_history(repo_path: str) -> list[TextContent]:
+    """Return the deployment history for the repository.
+
+    Requires the 'ops' role. Currently a stub — implementation pending.
+    """
     # TODO: implement deployment history analysis
     return [TextContent(type="text", text="[]")]
 
@@ -210,6 +228,11 @@ async def get_build_history(
     status: str | None = None,
     limit: int = 20,
 ) -> list[TextContent]:
+    """Get the recent build history for a repository.
+
+    Returns a list of builds with their branch, status, duration, and timestamp.
+    Optionally filter by branch and status. Currently uses mock data.
+    """
     if not os.path.isdir(repo_path):
         raise McpError(ErrorData(code=INVALID_PARAMS, message=f"Path does not exist: {repo_path}"))
     if not os.path.isdir(os.path.join(repo_path, ".git")):
@@ -263,5 +286,4 @@ Follow these steps:
    - A summary of the repository's health
    - Top 5 riskiest files and why
    - Commit pattern observations (unusual hours, large commits, etc.)
-   - Recommendations to reduce risk (e.g., add code owners, split large files, improve review process)
-"""
+   - Recommendations to reduce risk (e.g., add code owners, split large files, improve review process)"""
